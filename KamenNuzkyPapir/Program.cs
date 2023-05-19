@@ -6,14 +6,15 @@ namespace KamenNuzkyPapir
 {
     internal class Program
     {
-        // GlobalData gd = new GlobalData();
-
         public static void Main(string[] args)
         {
+            GlobalData.Nickname = GetNickname();
+            Console.ResetColor();
             while (true)
             {
-                MatchEvaluate(Attack());
                 Console.Clear();
+                GlobalData.PrintStatistics();
+                MatchEvaluate(Attack());
             }
         }
         
@@ -30,45 +31,41 @@ namespace KamenNuzkyPapir
         {
             var offensiveWeapon = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
-                    .Title("Vyberte věc pro útok:")
-                    .PageSize(4)
+                    .Title("Vyberte věc pro útok")
+                    .PageSize(10)
                     .AddChoices(GlobalData.Weapon)
                 );
             return offensiveWeapon;
         }
-        private static void PrintStats(byte lives)
-        {
-            for (int i = 0; i < lives; i++)
-            {
-                AnsiConsole.Markup("[red]♥ [/]");
-            }
-        }
 
-        private static void MatchEvaluate(string attack)
+        private static void MatchEvaluate(string pAttack)
         {
             Random r = new Random();
             string cAttack = GlobalData.Weapon[r.Next(0, 3)];
 
-            if (cAttack.Equals(attack))
+            if (cAttack.Equals(pAttack))
             {
-                AnsiConsole.MarkupLine("[yellow]Nerozhodne[/]");
+                GlobalData.LastEvent = "[yellow]nepřekvapil*a[/]";
+                GlobalData.Undecided++;
             }
             else if
                 (
-                    (attack == "Kamen" && cAttack == "Nůžky")
+                    (pAttack == "Kamen" && cAttack == "Nůžky")
                     ||
-                    (attack == "Nůžky" && cAttack == "Papír")
+                    (pAttack == "Nůžky" && cAttack == "Papír")
                     ||
-                    (attack == "Papír" && cAttack == "Kamen")
+                    (pAttack == "Papír" && cAttack == "Kamen")
                 )
             {
-                AnsiConsole.MarkupLine("[green]Vyhral jsi[/]");
+                GlobalData.LastEvent = "[green]vyhrál*a[/]";
+                GlobalData.PlayerWins++;
             }
             else
             {
-                AnsiConsole.MarkupLine("[red]Prohral jsi[/]");
+                GlobalData.LastEvent = "[red]prohral*a[/]";
+                GlobalData.ComputerWins++;
             }
-            Console.ReadKey();
+            GlobalData.TotalGames++;
         }
     }
 }
