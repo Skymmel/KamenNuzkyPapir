@@ -10,6 +10,8 @@ namespace KamenNuzkyPapir
     {
         public static void Main(string[] args)
         {
+            Console.Title = "Kámen nůžky papír";
+            
             bool doCycle = true;
             short counter = 0; 
             Nickname = GetNickname();
